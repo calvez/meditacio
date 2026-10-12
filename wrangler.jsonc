@@ -8,7 +8,7 @@
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
-	"routes": [{ "pattern": "zen.digitalhumanities.hu", "custom_domain": true }],
+	"routes": [{ "pattern": "meditacio.digitalhumanities.hu", "custom_domain": true }],
 	"observability": {
 		"enabled": true
 	}
