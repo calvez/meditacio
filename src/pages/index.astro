@@ -3,8 +3,25 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 
 const all = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: 'A helyes meditáció',
+  alternativeHeadline: 'Gyakorlati útmutató a zazenhez',
+  url: Astro.site?.href,
+  inLanguage: 'hu',
+  author: { '@type': 'Person', name: 'Taigen Shodo Roshi' },
+  editor: { '@type': 'Person', name: 'Taikyo' },
+  translator: { '@type': 'Person', name: 'Shinnyo' },
+  illustrator: { '@type': 'Person', name: 'Gauder Áron' },
+  publisher: { '@type': 'Organization', name: 'Egy Csepp Alapítvány', url: 'https://onedropzen.hu' },
+  datePublished: '2022',
+  isbn: '978-615-01-4791-8',
+  hasPart: all.map((c) => ({ '@type': 'Chapter', name: c.data.title, position: c.data.order, url: new URL(c.id, Astro.site).href })),
+};
 ---
 <Base>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(structuredData)} />
   <header class="cover">
     <div>
       <p class="author">Taigen Shodo Roshi</p>

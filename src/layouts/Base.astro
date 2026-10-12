@@ -1,25 +1,36 @@
 ---
+import { SEO } from 'astro-seo';
 import '../styles/global.css';
 interface Props { title?: string; description?: string; }
 const { title, description = 'Taigen Shodo Roshi: A helyes meditáció – gyakorlati útmutató a zazenhez.' } = Astro.props;
-const full = title ? `${title} – A helyes meditáció` : 'A helyes meditáció';
+const book = 'A helyes meditáció';
+const canonicalPath = Astro.url.pathname.replace(/(\/index)?\.html$/, '') || '/';
+const canonical = new URL(canonicalPath, Astro.site);
+const image = new URL('/og.png', Astro.site).href;
+const full = title ? `${title} – ${book}` : book;
 ---
 <!doctype html>
 <html lang="hu">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{full}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <SEO
+      title={full}
+      description={description}
+      canonical={canonical}
+      openGraph={{
+        basic: { title: full, type: canonicalPath === '/' ? 'book' : 'article', image, url: canonical },
+        optional: { description, locale: 'hu_HU', siteName: book },
+        image: { width: 1200, height: 630, alt: `${book} – Taigen Shodo Roshi` },
+      }}
+      twitter={{ card: 'summary_large_image' }}
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#eef2ee" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#101714" media="(prefers-color-scheme: dark)" />
-    <meta property="og:title" content={full} />
-    <meta property="og:description" content={description} />
-    <meta property="og:locale" content="hu_HU" />
-    <meta property="og:type" content="book" />
     <meta name="generator" content={Astro.generator} />
+    <slot name="head" />
   </head>
   <body>
     <slot />

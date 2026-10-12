@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { excerpt } from '../lib/excerpt';
 
 export async function getStaticPaths() {
   const all = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
@@ -14,7 +15,7 @@ const { entry, all, prev, next } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
 ---
-<Base title={d.title}>
+<Base title={d.title} description={excerpt(entry.body)}>
   <div class="progress" aria-hidden="true"><i id="bar"></i></div>
   <div class="shell">
   <aside class="side">
