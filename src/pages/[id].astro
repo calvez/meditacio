@@ -6,22 +6,25 @@ export async function getStaticPaths() {
   const all = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
   return all.map((entry, i) => ({
     params: { id: entry.id },
-    props: { entry, prev: all[i - 1], next: all[i + 1] },
+    props: { entry, all, prev: all[i - 1], next: all[i + 1] },
   }));
 }
 
-const { entry, prev, next } = Astro.props;
+const { entry, all, prev, next } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
 ---
 <Base title={d.title}>
   <div class="progress" aria-hidden="true"><i id="bar"></i></div>
-  <nav class="bar">
-    <a href="/">A helyes meditáció</a>
-    <a href="/#tartalom">Tartalom</a>
-  </nav>
+  <div class="shell">
+  <aside class="side">
+    <a class="brand" href="/"><small>Taigen Shodo Roshi</small>A helyes meditáció</a>
+    <ol>
+      {all.map((c) => <li><a href={`/${c.id}`} aria-current={c.id === entry.id ? 'page' : undefined}>{c.data.title}</a></li>)}
+    </ol>
+  </aside>
   <article class="page">
-    <p class="eyebrow">{['', 'I', 'II', 'III', 'IV', 'V'][d.order]}</p>
+    <p class="eyebrow">{d.order}. / {all.length}</p>
     <h1 class="title">{d.title}</h1>
     <div class="prose"><Content /></div>
     <nav class="pager" aria-label="Lapozás">
@@ -29,6 +32,7 @@ const d = entry.data;
       {next ? <a href={`/${next.id}`} rel="next"><small>Következő</small>{next.data.title}</a> : <a href="/#tartalom"><small>Vége</small>Tartalom</a>}
     </nav>
   </article>
+  </div>
   <script is:inline>
     (function () {
       var bar = document.getElementById('bar');

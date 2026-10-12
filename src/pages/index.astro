@@ -1,21 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Enso from '../components/Enso.astro';
 
 const all = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
 ---
 <Base>
   <header class="cover">
-    <Enso />
-    <div class="cover-inner">
+    <div>
       <p class="author">Taigen Shodo Roshi</p>
       <h1>A helyes<br /><em>meditáció</em></h1>
-      <p class="tagline">Gyakorlati útmutató</p>
-      <a class="btn" href="#tartalom">Olvasás</a>
-      <p class="quote">Egy kezdőnek a következő dolgokat kell tudnia ahhoz, hogy gyakorolhassa a zen meditációt, azaz a zazent.</p>
+      <p class="tagline">Gyakorlati útmutató a zazenhez</p>
+      <p class="lead">Egy kezdőnek a következő dolgokat kell tudnia ahhoz, hogy gyakorolhassa a zen meditációt, azaz a zazent.</p>
+      <a class="btn" href={`/${all[0].id}`}>Kezdés</a>
     </div>
-    <span class="hanko" aria-hidden="true">坐</span>
+    <div class="breath" aria-hidden="true"><i></i><i></i><i></i><b></b><small>be – ki</small></div>
   </header>
 
   <main class="toc" id="tartalom">
