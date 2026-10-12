@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Enso from '../components/Enso.astro';
+
+const all = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base>
+  <header class="cover">
+    <Enso />
+    <div class="cover-inner">
+      <p class="author">Taigen Shodo Roshi</p>
+      <h1>A helyes<br /><em>meditáció</em></h1>
+      <p class="tagline">Gyakorlati útmutató</p>
+      <a class="btn" href="#tartalom">Olvasás</a>
+      <p class="quote">Egy kezdőnek a következő dolgokat kell tudnia ahhoz, hogy gyakorolhassa a zen meditációt, azaz a zazent.</p>
+    </div>
+    <span class="hanko" aria-hidden="true">坐</span>
+  </header>
+
+  <main class="toc" id="tartalom">
+    <h2>Tartalom</h2>
+    <ol>
+      {all.map((c) => <li><a href={`/${c.id}`}>{c.data.title}</a></li>)}
+    </ol>
+    <div class="colophon">
+      <p>Taigen Shodo Roshi szóbeli tanítása alapján.<br />Szerkesztette: Taikyo. Fordította: Shinnyo. Illusztráció: Gauder Áron.</p>
+      <p>Egy Csepp Alapítvány, Budapest, 2022.<br />ISBN 978-615-01-4791-8</p>
+      <p><a href="https://onedropzen.hu">onedropzen.hu</a></p>
+    </div>
+  </main>
+  <footer class="site">meditacio.digitalhumanities.hu</footer>
+</Base>

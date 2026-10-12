@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
+  return all.map((entry, i) => ({
+    params: { id: entry.id },
+    props: { entry, prev: all[i - 1], next: all[i + 1] },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+<Base title={d.title}>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+  <nav class="bar">
+    <a href="/">A helyes meditáció</a>
+    <a href="/#tartalom">Tartalom</a>
+  </nav>
+  <article class="page">
+    <p class="eyebrow">{['', 'I', 'II', 'III', 'IV', 'V'][d.order]}</p>
+    <h1 class="title">{d.title}</h1>
+    <div class="prose"><Content /></div>
+    <nav class="pager" aria-label="Lapozás">
+      {prev ? <a href={`/${prev.id}`} rel="prev"><small>Előző</small>{prev.data.title}</a> : <span />}
+      {next ? <a href={`/${next.id}`} rel="next"><small>Következő</small>{next.data.title}</a> : <a href="/#tartalom"><small>Vége</small>Tartalom</a>}
+    </nav>
+  </article>
+  <script is:inline>
+    (function () {
+      var bar = document.getElementById('bar');
+      function u() {
+        var h = document.documentElement;
+        var p = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
+        bar.style.transform = 'scaleX(' + Math.min(1, Math.max(0, p)) + ')';
+      }
+      addEventListener('scroll', u, { passive: true });
+      u();
+    })();
+  </script>
+</Base>
